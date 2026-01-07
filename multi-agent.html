@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-agent systems</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: white;
+            font-family: 'Outfit', sans-serif;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Orange accent bar at top left */
+        .accent-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120px;
+            height: 25px;
+            background-color: #ff7300;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 40px 0 0 60px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .diagram-container {
+            width: 90%;
+            height: 70%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .diagram-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="accent-bar"></div>
+    <h1>Multi-agent systems</h1>
+
+    <div class="diagram-container">
+        <img src="images/multi-agent.png" alt="Multi-agent systems" class="diagram-image">
+    </div>
+
+    <script src="scripts/slide-controller.js"></script>
+    <script>
+        // Slide Controller Configuration
+        window.totalSteps = 1;
+        window.currentStep = 0;
+
+        // Elements
+        const diagramImage = document.querySelector('.diagram-image');
+
+        // Initial State
+        diagramImage.style.opacity = '0';
+        diagramImage.style.transform = 'translateY(20px)';
+        diagramImage.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+
+        // Entry Animation
+        document.body.style.opacity = 0;
+        window.onload = () => {
+            document.body.style.transition = "opacity 1s";
+            document.body.style.opacity = 1;
+        };
+
+        // Step Handler
+        document.addEventListener('keydown', (e) => {
+            // Next
+            if (['ArrowRight', ' ', 'Enter', 'PageDown', 'ArrowDown'].includes(e.key)) {
+                if (window.currentStep === 0) {
+                    window.currentStep++;
+                    // Animate Image In
+                    diagramImage.style.opacity = '1';
+                    diagramImage.style.transform = 'translateY(0)';
+                }
+            }
+            // Prev
+            else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) {
+                if (window.currentStep === 1) {
+                    window.currentStep--;
+                    // Animate Image Out
+                    diagramImage.style.opacity = '0';
+                    diagramImage.style.transform = 'translateY(20px)';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

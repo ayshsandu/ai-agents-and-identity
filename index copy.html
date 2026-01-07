@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Identity - Presentation Deck</title>
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --nav-bg: rgba(20, 20, 20, 0.8);
+            --accent-orange: #f5821f;
+            --text-white: #ffffff;
+            --text-dim: #888888;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        #presentation-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Navigation Bar - Bottom Right */
+        .nav-bar {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            /* Anchored to right */
+            left: auto;
+            /* Remove center alignment */
+            transform: none;
+            /* Remove center transform */
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            /* Spacing between elements */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .nav-bar.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            /* Move down to hide */
+            pointer-events: none;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-white);
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s, transform 0.1s;
+        }
+
+        .nav-btn:hover {
+            color: var(--accent-orange);
+        }
+
+        .nav-btn:active {
+            transform: scale(0.9);
+        }
+
+        .nav-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* Slide Info - Inside Nav Bar */
+        .slide-info {
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+            color: var(--text-dim);
+            /* Resetting previous standalone styles */
+            position: static;
+            background: none;
+            border: none;
+            box-shadow: none;
+            backdrop-filter: none;
+            padding: 0;
+        }
+
+        .slide-info span {
+            color: var(--text-white);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            z-index: 1001;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent-orange);
+            width: 0%;
+            transition: width 0.3s ease-out;
+            box-shadow: 0 0 10px var(--accent-orange);
+        }
+
+        /* Key Highlights */
+        .keyboard-hint {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--nav-bg);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--text-dim);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .keyboard-hint:hover {
+            opacity: 1;
+        }
+
+        .keyboard-hint kbd {
+            background: #333;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: var(--text-white);
+            font-family: inherit;
+        }
+    </style>
+</head>
+
+<body>
+
+    <iframe id="presentation-frame" src=""></iframe>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- Combined Nav Bar at Bottom Right -->
+    <div class="nav-bar" id="nav-bar">
+        <button class="nav-btn" id="prev-btn" title="Previous (Left Arrow)">
+            <svg viewBox="0 0 24 24">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+            </svg>
+        </button>
+
+        <div class="slide-info" id="slide-info">
+            <span id="current-slide">1</span> / <span id="total-slides">12</span>
+        </div>
+
+        <button class="nav-btn" id="next-btn" title="Next (Right Arrow or Space)">
+            <svg viewBox="0 0 24 24">
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+            </svg>
+        </button>
+
+        <button class="nav-btn" id="fullscreen-btn" title="Toggle Fullscreen (F)">
+            <svg viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+            </svg>
+        </button>
+    </div>
+
+    <div class="keyboard-hint">
+        Use <kbd>←</kbd> <kbd>→</kbd> or <kbd>Space</kbd> to navigate
+    </div>
+
+    <script>
+        // Slide Configuration
+        const slides = [
+            'welcome.html',
+            'video.html',
+            'intro.html',
+            'speaker.html',
+            'ai-vs-agent.html', // Deduced filename
+            'agent-core.html',
+            'agent-type.html'
+        ];
+
+        let currentSlideIndex = 0;
+        const frame = document.getElementById('presentation-frame');
+        const slideInfo = document.getElementById('slide-info');
+        const currentSlideEl = document.getElementById('current-slide');
+        const totalSlidesEl = document.getElementById('total-slides');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        // Initialize
+        function init() {
+            // Check for hash in URL to jump to specific slide
+            const hash = window.location.hash.slice(1);
+            if (hash && !isNaN(hash)) {
+                const index = parseInt(hash) - 1;
+                if (index >= 0 && index < slides.length) {
+                    currentSlideIndex = index;
+                }
+            }
+
+            totalSlidesEl.textContent = slides.length;
+            loadSlide(currentSlideIndex);
+
+            // Focus the iframe so keyboard events work inside it too if desired, 
+            // but capturing on window is better.
+            window.focus();
+        }
+
+        function loadSlide(index) {
+            if (index < 0 || index >= slides.length) return;
+
+            const slideUrl = slides[index];
+            frame.src = slideUrl;
+            currentSlideIndex = index;
+
+            // Update UI
+            currentSlideEl.textContent = index + 1;
+
+            // Update Progress Bar
+            const progress = ((index + 1) / slides.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // Update URL hash without scrolling
+            history.replaceState(null, null, `#${index + 1}`);
+
+            // Button states
+            prevBtn.style.opacity = index === 0 ? '0.3' : '1';
+            prevBtn.style.pointerEvents = index === 0 ? 'none' : 'auto';
+
+            nextBtn.style.opacity = index === slides.length - 1 ? '0.3' : '1';
+            nextBtn.style.pointerEvents = index === slides.length - 1 ? 'none' : 'auto';
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < slides.length - 1) {
+                loadSlide(currentSlideIndex + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 0) {
+                loadSlide(currentSlideIndex - 1);
+            }
+        }
+
+        // Event Listeners
+        prevBtn.addEventListener('click', prevSlide);
+        nextBtn.addEventListener('click', nextSlide);
+
+        // Fullscreen toggle
+        document.getElementById('fullscreen-btn').addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 'ArrowRight':
+                case 'Space':
+                case 'Enter':
+                case ' ':
+                    // Prevent default scrolling for space
+                    if (e.key === ' ' || e.key === 'Space') e.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                case 'Backspace':
+                    prevSlide();
+                    break;
+                case 'f':
+                case 'F':
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen();
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        }
+                    }
+                    break;
+            }
+        });
+
+        // Handle messages from iframe (optional: for click propagation)
+        window.addEventListener('message', (event) => {
+            if (event.data === 'nextSlide') {
+                nextSlide();
+            } else if (event.data === 'prevSlide') {
+                prevSlide();
+            }
+        });
+
+        // Focus management to ensure keys work after clicking iframe
+        frame.addEventListener('load', () => {
+            // Try to inject script into iframe to capture key events and bubble them up
+            // detailed implementation depends on same-origin policy, assuming local files it works
+            try {
+                const iframeDoc = frame.contentDocument || frame.contentWindow.document;
+                iframeDoc.addEventListener('keydown', (e) => {
+                    // Redispatch to parent or handle directly
+                    switch (e.key) {
+                        case 'ArrowRight':
+                        case 'Space':
+                        case ' ':
+                            if (e.key === ' ' || e.key === 'Space') e.preventDefault();
+                            nextSlide(); // Call parent function
+                            break;
+                        case 'ArrowLeft':
+                            prevSlide();
+                            break;
+                    }
+                });
+
+                // Also forwarding clicks if desired, though usually slides have interactions
+            } catch (err) {
+                console.log("Cross-origin restrictions may prevent key capture inside iframe");
+            }
+        });
+
+        init();
+    </script>
+
+</body>
+
+</html>

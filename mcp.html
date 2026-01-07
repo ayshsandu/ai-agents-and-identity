@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Authorization</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: white;
+            font-family: 'Outfit', sans-serif;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Orange accent bar at top left */
+        .accent-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120px;
+            height: 25px;
+            background-color: #ff7300;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 40px 0 0 60px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .diagram-container {
+            width: 90%;
+            height: 70%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .diagram-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            /* Filter to ensure it looks good if needed, but avif should be fine */
+        }
+
+        .citation {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.9rem;
+            color: #64748b;
+            z-index: 5;
+        }
+
+        .citation a {
+            color: #64748b;
+            text-decoration: none;
+        }
+
+        .citation a:hover {
+            text-decoration: underline;
+            color: #ff7300;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="accent-bar"></div>
+    <h1>Model Context Protocol (MCP)</h1>
+
+    <div class="diagram-container">
+        <!-- Image 1 -->
+        <img src="images/mcp/mcp-simple-diagram.avif" alt="MCP Architecture Diagram" class="diagram-image"
+            id="img-simple">
+        <!-- Image 2 -->
+        <img src="images/mcp/mcp-components.png" alt="MCP Components" class="diagram-image" id="img-component">
+    </div>
+
+    <!-- Citation removed as requested -->
+
+    <script src="scripts/slide-controller.js"></script>
+    <script>
+        // Slide Controller Configuration
+        window.totalSteps = 2;
+        window.currentStep = 0;
+
+        // Elements
+        const imgSimple = document.getElementById('img-simple');
+        const imgComponent = document.getElementById('img-component');
+
+        // Initial State
+        // Both hidden initially
+        // Simple image
+        imgSimple.style.opacity = '0';
+        imgSimple.style.transform = 'translateY(20px)';
+        imgSimple.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+        imgSimple.style.position = 'absolute'; // Stack them
+
+        // Component image
+        imgComponent.style.opacity = '0';
+        imgComponent.style.transform = 'translateY(20px)';
+        imgComponent.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+        imgComponent.style.position = 'absolute'; // Stack them
+
+        // Entry Animation
+        document.body.style.opacity = 0;
+        window.onload = () => {
+            document.body.style.transition = "opacity 1s";
+            document.body.style.opacity = 1;
+        };
+
+        // Step Handler
+        document.addEventListener('keydown', (e) => {
+            // Next
+            if (['ArrowRight', ' ', 'Enter', 'PageDown', 'ArrowDown'].includes(e.key)) {
+                if (window.currentStep < window.totalSteps) {
+                    window.currentStep++;
+                    updateState();
+                }
+            }
+            // Prev
+            else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) {
+                if (window.currentStep > 0) {
+                    window.currentStep--;
+                    updateState();
+                }
+            }
+        });
+
+        function updateState() {
+            const step = window.currentStep;
+
+            // Step 1: Show Simple, Hide Component
+            if (step === 1) {
+                // Show Simple
+                imgSimple.style.opacity = '1';
+                imgSimple.style.transform = 'translateY(0)';
+                // Hide Component
+                imgComponent.style.opacity = '0';
+                imgComponent.style.transform = 'translateY(20px)';
+            }
+            // Step 2: Hide Simple, Show Component
+            else if (step === 2) {
+                // Hide Simple
+                imgSimple.style.opacity = '0';
+                imgSimple.style.transform = 'translateY(-20px)'; // move up out
+                // Show Component
+                imgComponent.style.opacity = '1';
+                imgComponent.style.transform = 'translateY(0)';
+            }
+            // Step 0: Hide All
+            else if (step === 0) {
+                imgSimple.style.opacity = '0';
+                imgSimple.style.transform = 'translateY(20px)';
+                imgComponent.style.opacity = '0';
+                imgComponent.style.transform = 'translateY(20px)';
+            }
+        }
+    </script>
+</body>
+
+</html>

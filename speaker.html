@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaker - Ayesha Dissanayaka</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: white;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 1000px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            position: relative;
+        }
+
+        /* The horizontal grey line */
+        .decoration-line {
+            position: absolute;
+            top: 28%;
+            left: -10vw;
+            width: 120vw;
+            height: 2px;
+            background-color: #d1d5db;
+            z-index: 1;
+        }
+
+        /* Left Side: Image */
+        .profile-section {
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+        }
+
+        .profile-image-container {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: #f3f4f6;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+            /* Mirror the image */
+        }
+
+        /* Right Side: Content */
+        .content-section {
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 40px;
+            /* Offset to align with visual hierarchy */
+        }
+
+        /* Hello! Text */
+        .hello-text {
+            font-size: 8rem;
+            font-weight: 700;
+            color: #d1d5db;
+            /* Light grey */
+            line-height: 1;
+            margin-bottom: 2rem;
+            margin-left: -10px;
+            /* Slight optical adjustment */
+            background-color: white;
+            /* To mask the line */
+            display: inline-block;
+            padding-right: 20px;
+            position: relative;
+            top: -60px;
+            /* Move up to intersect line */
+        }
+
+        .info-group {
+            margin-top: -40px;
+        }
+
+        /* Name Tag */
+        .name-tag {
+            background-color: #ff7300;
+            /* Orange */
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            padding: 5px 15px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        /* Title Tag */
+        .title-tag {
+            background-color: #e5e7eb;
+            /* Light grey */
+            color: #4b5563;
+            /* Dark grey */
+            font-size: 1.25rem;
+            font-weight: 500;
+            padding: 5px 15px;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        /* Contact Info */
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 1.2rem;
+            color: #374151;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .icon-circle {
+            width: 40px;
+            height: 40px;
+            background-color: #4b5563;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            transition: background-color 0.3s;
+        }
+
+        .icon-circle:hover {
+            background-color: #ff7300;
+        }
+
+        /* Orange accent bar at top left */
+        .accent-bar {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 80px;
+            height: 20px;
+            background-color: #ff7300;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="accent-bar"></div>
+    <div class="decoration-line"></div>
+
+    <div class="container">
+        <div class="profile-section">
+            <div class="profile-image-container">
+                <img src="images/ayesha.jpg" alt="Ayesha Dissanayaka" class="profile-image">
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="hello-text">Hello!</div>
+
+            <div class="info-group">
+                <div class="name-tag">Ayesha Dissanayaka</div><br>
+                <div class="title-tag">Associate Director / Architect - IAM</div>
+
+                <div class="contact-info">
+                    <div class="social-icons">
+                        <a href="https://www.linkedin.com/in/ayeshadissanayaka/" target="_blank" class="icon-circle"><i
+                                class="fab fa-linkedin-in"></i></a>
+                        <a href="https://x.com/ayshsandu" target="_blank" class="icon-circle"><i
+                                class="fa-solid fa-x"></i></a>
+                        <a href="https://medium.com/@ayshsandu" target="_blank" class="icon-circle"><i
+                                class="fab fa-medium"></i></a>
+                    </div>
+                    <span>ayesha@wso2.com</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="scripts/slide-controller.js"></script></body>
+
+</html>

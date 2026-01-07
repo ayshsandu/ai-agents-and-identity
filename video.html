@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video - Tech Conf 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+            /* Fallback */
+            height: 100vh;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            /* Optional: blur the background image slightly */
+        }
+
+        .tv-frame {
+            position: relative;
+            width: 98vw;
+            height: 93vh;
+            background: #111;
+            border-radius: 20px;
+            padding: 15px;
+            /* Bezel width */
+            box-shadow:
+                0 0 0 2px #333,
+                0 0 0 8px #111,
+                /* Outer rim */
+                0 20px 50px rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="tv-frame">
+        <video id="main-video" controls autoplay>
+            <source src="My Movie 2.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <script>
+        // Integration with slide-controller.js
+        window.currentStep = 0;
+        window.totalSteps = 1;
+
+        const vid = document.getElementById('main-video');
+
+        vid.addEventListener('ended', () => {
+            window.currentStep = 1;
+            console.log("Video Ended. Step updated to 1.");
+        });
+
+        // Optional: Allow manual skip if desired? 
+        // For now, strict "ensure executed" means wait.
+        // But if user mashes keys, maybe we should seek to end?
+        // Let's keep it strict for now.
+    </script>
+
+
+    <script src="scripts/slide-controller.js"></script>
+</body>
+
+</html>

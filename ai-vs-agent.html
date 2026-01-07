@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is an Agent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: white;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            padding: 40px 60px;
+        }
+
+        /* Orange accent bar at top left */
+        .accent-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120px;
+            height: 25px;
+            background-color: #ff7300;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: black;
+            margin-top: 40px;
+            margin-bottom: 2rem;
+        }
+
+        .content-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: -40px;
+            /* Slight visual pull up */
+        }
+
+        /* Container for the image to scale nicely */
+        .illustration-container {
+            width: 80%;
+            max-width: 1000px;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .illustration {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Labels */
+        .labels-container {
+            display: flex;
+            width: 80%;
+            max-width: 1000px;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 0 5%;
+            /* Align somewhat with the image contents which are centered */
+        }
+
+        .label {
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: #111;
+            text-align: center;
+            width: 45%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="accent-bar"></div>
+
+    <h1>What is an Agent</h1>
+
+    <div class="content-container">
+        <div class="illustration-container">
+            <img src="images/ai-vs-agent.png" alt="AI vs Agent Diagram" class="illustration">
+        </div>
+
+        <div class="labels-container">
+            <div class="label">AI</div>
+            <div class="label">AI with action and perception</div>
+        </div>
+    </div>
+
+<script src="scripts/slide-controller.js"></script></body>
+
+</html>

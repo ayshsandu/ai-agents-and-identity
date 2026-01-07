@@ -1,0 +1,89 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    background-image: url('images/background-1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    font-family: 'Outfit', sans-serif;
+}
+
+body.intro-slide {
+    background-image: none;
+    background-color: #51606D;
+    /* Cool Grey Updated */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slide-container {
+    display: flex;
+    flex-direction: row;
+    /* Horizontal layout for slide */
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+    width: 90%;
+    max-width: 1200px;
+}
+
+.memphis-card {
+    background: white;
+    padding: 1rem;
+    border: 4px solid black;
+    box-shadow: 10px 10px 0px #ff7300;
+    /* Hard orange shadow */
+    transition: transform 0.3s ease;
+    width: 300px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.memphis-card:hover {
+    transform: translate(-5px, -5px);
+    box-shadow: 15px 15px 0px #ff7300;
+}
+
+.memphis-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.arrow-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+}
+
+.memphis-arrow {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(5px 5px 0px black);
+    /* Shadow for the arrow itself */
+}
+
+/* Response to screen size */
+@media (max-width: 768px) {
+    .slide-container {
+        flex-direction: column;
+    }
+
+    .memphis-arrow {
+        transform: rotate(90deg);
+        /* Point down on mobile if it points right by default */
+        margin: 1rem 0;
+    }
+}

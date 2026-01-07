@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Conf 2026 Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #slide-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        iframe.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="slide-container">
+        <iframe id="slide-frame" allow="autoplay; fullscreen"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+    </div>
+
+    <script>
+        const slides = [
+            'welcome.html',
+            'intro.html',
+            'speaker.html',
+            'ai-vs-agent.html',
+            'agent-core.html',
+            'agent-type.html',
+            'agent-world.html',
+            'mcp-intro.html',
+            'mcp.html',
+            'multi-agent-intro.html',
+            'multi-agent.html',
+            'iam-for-agent.html'
+        ];
+
+        let currentIndex = 0;
+        const frame = document.getElementById('slide-frame');
+
+        // Load Initial Slide
+        loadSlide(0);
+
+        function loadSlide(index) {
+            if (index < 0 || index >= slides.length) return;
+
+            currentIndex = index;
+
+            // Fade out
+            frame.classList.remove('visible');
+
+            setTimeout(() => {
+                frame.onload = () => {
+                    // Fade in after load
+                    frame.classList.add('visible');
+                    // Focus the iframe so keys work immediately inside
+                    frame.contentWindow.focus();
+                };
+                frame.src = slides[index];
+            }, 500);
+        }
+
+        // Listen for messages from slides
+        window.addEventListener('message', (e) => {
+            const data = e.data;
+            if (data.status === 'DONE_NEXT') {
+                goNext();
+            } else if (data.status === 'DONE_PREV') {
+                goPrev();
+            }
+        });
+
+        // Global Navigation (in case Focus is on parent)
+        document.addEventListener('keydown', (e) => {
+            // If focus is on standard body, we handle it.
+            // But if focus is on iframe, our capture might trigger?
+            // Since we use 'message' for coordination, we can just send commands to iframe if we catch keys here.
+
+            if (['ArrowRight', ' ', 'Enter', 'PageDown', 'ArrowDown'].includes(e.key)) {
+                // Send Next Command to iframe
+                // If iframe handles it, it replies HANDLED (and do nothing).
+                // If iframe is done, it replies DONE.
+                // Actually the iframe logic handles "Checking". We just assume we want to move.
+                // BUT: we don't know the state of the iframe from here easily without asking.
+                // So we blindly send "NAVIGATE: NEXT".
+                if (frame.contentWindow) {
+                    frame.contentWindow.postMessage({ action: 'NAVIGATE', direction: 'NEXT' }, '*');
+                }
+            } else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) {
+                if (frame.contentWindow) {
+                    frame.contentWindow.postMessage({ action: 'NAVIGATE', direction: 'PREV' }, '*');
+                }
+            }
+        });
+
+        function goNext() {
+            if (currentIndex < slides.length - 1) {
+                loadSlide(currentIndex + 1);
+            }
+        }
+
+        function goPrev() {
+            if (currentIndex > 0) {
+                loadSlide(currentIndex - 1);
+            }
+        }
+
+        // Ensure focus stays on iframe
+        document.addEventListener('click', () => {
+            if (frame.contentWindow) frame.contentWindow.focus();
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent to Tools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: white;
+            font-family: 'Outfit', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Orange accent bar at top left */
+        .accent-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120px;
+            height: 25px;
+            background-color: #ff7300;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: black;
+            margin: 40px 0 0 60px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .diagram-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Common styles for images/nodes */
+        .node {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .node img {
+            width: 100px;
+            /* Base size */
+            height: auto;
+            object-fit: contain;
+        }
+
+        .node-label {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            color: #333;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Specific positioning and sizing */
+
+        /* 1. Middle Brain */
+        #node-brain {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+
+        #node-brain img {
+            width: 250px;
+        }
+
+        /* 2. Initiators (Left) */
+        #node-initiators {
+            top: 50%;
+            left: 15%;
+            transform: translateY(-50%);
+        }
+
+        #node-initiators img {
+            width: 130px;
+        }
+
+        /* 4. Internal (Top Right) */
+        #node-internal {
+            top: 20%;
+            right: 10%;
+            align-items: flex-start;
+        }
+
+        #node-internal img {
+            width: 180px;
+        }
+
+        /* 5. External (Bottom Right) */
+        #node-external {
+            bottom: 2%;
+            right: 15%;
+            align-items: flex-start;
+        }
+
+        #node-external img {
+            width: 180px;
+        }
+
+        /* Labels styling overrides if needed */
+        .label-top {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        .label-side {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        /* SVG Overlay for arrows */
+        #arrows-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .arrow-line {
+            fill: none;
+            stroke: #ff7300;
+            stroke-width: 3;
+        }
+
+        /* Group opacity handling for multi-segment arrows */
+        .arrow-group {}
+
+        .arrow-connector {
+            fill: none;
+            stroke: #ff7300;
+            stroke-width: 3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="accent-bar"></div>
+    <h1>Agent to Data/Tools/Workflows</h1>
+
+    <div class="diagram-container">
+
+        <!-- SVG Connections -->
+        <svg id="arrows-svg">
+            <defs>
+                <!-- Arrowhead for end of line (normal) -->
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#ff7300" />
+                </marker>
+                <!-- Arrowhead for start of line (reverse) -->
+                <marker id="arrowhead-reverse" markerWidth="10" markerHeight="7" refX="1" refY="3.5" orient="auto">
+                    <polygon points="10 0, 0 3.5, 10 7" fill="#ff7300" />
+                </marker>
+            </defs>
+
+            <!-- 2. Initiators to Brain (Double Arrow) -->
+            <!-- From Left Node (approx 22% X) to Brain Left (approx 42% X) -->
+            <line id="arrow-initiators" class="arrow-line" x1="22%" y1="50%" x2="40%" y2="50%"
+                marker-start="url(#arrowhead-reverse)" marker-end="url(#arrowhead)" />
+
+            <!-- Right Side Fork / Elbow Connectors -->
+
+            <!-- 4. Internal (Elbow) Group -->
+            <g id="arrow-internal" class="arrow-group">
+                <!-- Brain to Mid -->
+                <line x1="60%" y1="50%" x2="65%" y2="50%" class="arrow-connector"
+                    marker-start="url(#arrowhead-reverse)" />
+                <!-- Mid to Up -->
+                <line x1="65%" y1="50%" x2="65%" y2="30%" class="arrow-connector" />
+                <!-- Up to Right -->
+                <line x1="65%" y1="30%" x2="70%" y2="30%" class="arrow-connector" marker-end="url(#arrowhead)" />
+            </g>
+
+            <!-- 5. External (Elbow) Group -->
+            <g id="arrow-external" class="arrow-group">
+                <!-- Brain to Mid -->
+                <line x1="60%" y1="50%" x2="65%" y2="50%" class="arrow-connector"
+                    marker-start="url(#arrowhead-reverse)" />
+                <!-- Mid to Down -->
+                <line x1="65%" y1="50%" x2="65%" y2="88%" class="arrow-connector" />
+                <!-- Down to Right -->
+                <line x1="65%" y1="88%" x2="70%" y2="88%" class="arrow-connector" marker-end="url(#arrowhead)" />
+            </g>
+
+        </svg>
+
+        <!-- Centered Brain -->
+        <div id="node-brain" class="node">
+            <img src="images/world-connections/brain.png" alt="Brain">
+        </div>
+
+        <!-- Surrounding Nodes -->
+        <div id="node-initiators" class="node">
+            <div class="node-label label-side">Initiators</div>
+            <img src="images/world-connections/initiators.png" alt="Initiators">
+        </div>
+
+        <div id="node-internal" class="node">
+            <div class="node-label label-side">Internal Business Systems</div>
+            <img src="images/world-connections/internal-systems.png" alt="Internal Systems">
+        </div>
+
+        <div id="node-external" class="node">
+            <div class="node-label label-side">External Services</div>
+            <img src="images/world-connections/external-systems.png" alt="External Services">
+        </div>
+
+    </div>
+
+    <script src="scripts/slide-controller.js"></script>
+    <script>
+        // No steps, straight passthrough
+        window.totalSteps = 0;
+        window.currentStep = 0;
+    </script>
+</body>
+
+</html>

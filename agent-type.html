@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Different forms of Agents</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: white;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            padding: 40px 60px;
+        }
+
+        .accent-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120px;
+            height: 25px;
+            background-color: #ff7300;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: black;
+            margin-top: 40px;
+            margin-bottom: 60px;
+        }
+
+        .agents-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .agent-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 18%;
+            /* 5 items, ~18% each */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .agent-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .agent-image {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 20px;
+            /* Optional: drop shadow or styling */
+            /* filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); */
+        }
+
+        .agent-label {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="accent-bar"></div>
+    <h1>Different forms of Agents</h1>
+
+    <div class="agents-container">
+        <!-- 1. Request-Response -->
+        <div class="agent-card" id="card-1">
+            <img src="images/agents/reqest-response-agents.png" alt="Request Response" class="agent-image">
+            <div class="agent-label">Request-Response</div>
+        </div>
+
+        <!-- 2. Ambient -->
+        <div class="agent-card" id="card-2">
+            <img src="images/agents/ambient-agents.png" alt="Ambient" class="agent-image">
+            <div class="agent-label">Ambient</div>
+        </div>
+
+        <!-- 3. Interactive -->
+        <div class="agent-card" id="card-3">
+            <img src="images/agents/interactive-agents.png" alt="Interactive" class="agent-image">
+            <div class="agent-label">Interactive</div>
+        </div>
+
+        <!-- 4. Browser Use -->
+        <div class="agent-card" id="card-4">
+            <img src="images/agents/browser-use-agent.png" alt="Browser Use" class="agent-image">
+            <div class="agent-label">Browser/Computer Use</div>
+        </div>
+
+        <!-- 5. Collaborative -->
+        <div class="agent-card" id="card-5">
+            <img src="images/agents/collaborative-agents.png" alt="Collaborative" class="agent-image">
+            <div class="agent-label">Collaborative</div>
+        </div>
+    </div>
+
+    <script>
+        var currentStep = 0;
+        window.totalSteps = 5;
+
+        function updateState(step) {
+            for (let i = 1; i <= totalSteps; i++) {
+                const card = document.getElementById(`card-${i}`);
+                if (i <= step) {
+                    card.classList.add('visible');
+                } else {
+                    card.classList.remove('visible');
+                }
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    updateState(currentStep);
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (currentStep > 0) {
+                    currentStep--;
+                    updateState(currentStep);
+                }
+            }
+        });
+    </script>
+<script src="scripts/slide-controller.js"></script></body>
+
+</html>

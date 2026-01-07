@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title from the slide content -->
+    <title>What is an Agent : Core</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: white;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            padding: 40px 60px;
+        }
+
+        /* Orange accent bar at top left */
+        .accent-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120px;
+            height: 25px;
+            background-color: #ff7300;
+        }
+
+        /* Header Section */
+        header {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: black;
+            margin-bottom: 40px;
+        }
+
+        .qa-section {
+            font-size: 1.8rem;
+            color: #111;
+            line-height: 1.4;
+            margin-left: 60px;
+            /* Moved right */
+        }
+
+        .answer {
+            margin-top: 10px;
+        }
+
+        /* Code Block Area */
+        /* Code Block Area */
+        .code-container {
+            margin-left: 60px;
+            /* Moved right */
+            margin-top: -10px;
+            /* Moved up */
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1rem;
+            color: #333;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-width: 90%;
+            background-color: #f5f5f5;
+            /* Light gray background */
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        .tag {
+            background-color: #ff7300;
+            color: black;
+            font-weight: 600;
+            padding: 0 2px;
+            display: inline-block;
+        }
+
+        .tag-s {
+            background-color: #ffad60;
+            /* Slightly lighter for <s>? Image uses same heavy orange */
+            background-color: #ff7300;
+        }
+
+        /* Footer */
+        .footer {
+            position: absolute;
+            bottom: 30px;
+            right: 60px;
+            font-size: 0.8rem;
+            color: #666;
+            text-align: right;
+        }
+
+        .footer a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        /* Animation States */
+        .step-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .step-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Dim Layer */
+        #dim-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.95);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            z-index: 10;
+        }
+
+        #dim-layer.active {
+            opacity: 1;
+        }
+
+        /* Token Word Highlight */
+        #token-word {
+            position: relative;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: inline-block;
+        }
+
+        #token-word.active {
+            color: #ff7300;
+            font-weight: 700;
+            z-index: 100;
+            transform: scale(1.1);
+        }
+
+        /* Overlay Container */
+        .overlay {
+            position: fixed;
+            top: 55%;
+            /* Slightly lower to clear the question */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .overlay-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .cat-image {
+            width: 180px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .text-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            /* Reduced gap */
+            transition: opacity 0.3s ease;
+            min-width: 300px;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 5px 20px;
+            /* Tighter gap */
+            align-items: center;
+        }
+
+        .label {
+            font-size: 0.9rem;
+            color: #666;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .value {
+            font-size: 2rem;
+            color: black;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+        }
+
+        .footer-row {
+            /* Removed border-top */
+            padding-top: 20px;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .value-code {
+            /* Changed to match .value style */
+            font-size: 2rem;
+            color: black;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* Updated Label Style to match English/Chinese */
+        .label-mini {
+            font-size: 0.9rem;
+            color: #666;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 400;
+        }
+
+        /* TV Frame Container */
+        /* TV Frame Container */
+        .tv-frame {
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            border: 8px solid #edeeee;
+            box-shadow: 0 0 0 2px #555, 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            background-clip: padding-box;
+
+            /* Fixed Size matching the largest state */
+            width: 800px;
+            height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Grid Layout updates */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 80px 400px;
+            /* Fixed width for value column */
+            gap: 15px 20px;
+            align-items: center;
+            justify-content: start;
+            /* Align content to the left inside the text group if needed, but grid columns handle it */
+        }
+
+        .overlay-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .text-group {
+            /* Ensure it doesn't shrink */
+            flex-shrink: 0;
+        }
+
+        /* Connector SVG */
+        #connector-svg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 25;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #connector-svg.visible {
+            opacity: 1;
+        }
+
+        .connector-path {
+            fill: none;
+            stroke: #ff7300;
+            stroke-width: 3;
+            stroke-dasharray: 10 5;
+            animation: dash 1s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -15;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="accent-bar"></div>
+
+    <header>
+        <h1>What is an Agent : Core</h1>
+
+        <div class="qa-section">
+            <div class="question step-item">Q: LLMs can only predict next <span id="token-word">token</span>. How can do
+                actions?</div>
+            <div class="answer step-item">A: Control tokens</div>
+        </div>
+    </header>
+
+    <div class="code-container step-item">
+        <span class="tag">&lt;s&gt;</span>
+        <span class="tag">[AVAILABLE_TOOLS]</span>
+        [{"type": "function", "function": {"name": "calculator", "description": "Performs mathematical calculations",
+        "parameters": {"type": "object", "properties": {"operation": {"type": "string", "description": "The operation to
+        be done in python format."}}, "required": ["operation"]}}}]
+        <span class="tag">[/AVAILABLE_TOOLS]</span>
+        <span class="tag">[INST]</span>
+        What's 2+2?
+        <span class="tag">[/INST]</span>
+        <span class="tag">[TOOL_CALLS]</span>
+        [{"name": "calculator", "arguments": {"operation": "2+2"}}]<span class="tag">&lt;/s&gt;</span>
+        <span class="tag">[TOOL_RESULTS]</span>
+        [{"name": "calculator", "content": 4}]
+        <span class="tag">[/TOOL_RESULTS]</span>
+        2+2=4<span class="tag">&lt;/s&gt;</span>
+    </div>
+
+    <svg id="connector-svg">
+        <path id="connector-path" class="connector-path" d="" />
+    </svg>
+
+    <div id="dim-layer"></div>
+
+    <div id="token-overlay" class="overlay">
+        <div class="tv-frame">
+            <div class="overlay-content">
+                <img src="images/cat.png" alt="Cat Illustration" class="cat-image">
+
+                <div id="overlay-text-group" class="text-group">
+                    <div class="grid-layout">
+                        <span class="label">English</span>
+                        <span id="val-english" class="value">cat</span>
+
+                        <span class="label">Chinese</span>
+                        <span id="val-chinese" class="value">猫</span>
+
+                        <span class="label-mini">GPT-4o</span>
+                        <span id="val-gpt" class="value-code">[8837]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const question = document.querySelector('.question');
+        const answer = document.querySelector('.answer');
+        const codeContainer = document.querySelector('.code-container');
+        const dimLayer = document.getElementById('dim-layer');
+        const tokenWord = document.getElementById('token-word');
+        const tokenOverlay = document.getElementById('token-overlay');
+        const connectorSvg = document.getElementById('connector-svg');
+        const connectorPath = document.getElementById('connector-path');
+
+        // Text Elements
+        const valEnglish = document.getElementById('val-english');
+        const valChinese = document.getElementById('val-chinese');
+        const valGpt = document.getElementById('val-gpt');
+
+        // Function to draw line
+        function drawConnector() {
+            const tokenRect = tokenWord.getBoundingClientRect();
+            // Get the overlay center position or specific anchor - let's aim for top center of TV frame
+            const overlayRect = document.querySelector('.tv-frame').getBoundingClientRect();
+
+            // Start point: bottom center of 'token'
+            const startX = tokenRect.left + tokenRect.width / 2;
+            const startY = tokenRect.bottom + 5; // small gap
+
+            // End point: top center of overlay
+            const endX = overlayRect.left + overlayRect.width / 2;
+            const endY = overlayRect.top - 5;
+
+            // Control points for bezier
+            const cp1X = startX;
+            const cp1Y = startY + 50;
+            const cp2X = endX;
+            const cp2Y = endY - 50;
+
+            const d = `M ${startX} ${startY} C ${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${endX} ${endY}`;
+            connectorPath.setAttribute('d', d);
+        }
+
+        // State Management
+        var currentStep = 0;
+        window.totalSteps = 6;
+
+        function updateState(step) {
+
+            // Step 1: Question
+            if (step >= 1) {
+                question.classList.add('visible');
+            } else {
+                question.classList.remove('visible');
+            }
+
+            // Step 2 & 3: Overlay Logic
+            if (step === 2 || step === 3) {
+                dimLayer.classList.add('active');
+                tokenWord.classList.add('active');
+                tokenOverlay.classList.add('visible');
+
+                // Ensure connector is drawn and visible
+                setTimeout(() => {
+                    drawConnector();
+                    connectorSvg.classList.add('visible');
+                }, 10);
+
+                if (step === 2) {
+                    valEnglish.innerText = 'cat';
+                    valChinese.innerText = '猫';
+                    valGpt.innerText = '[8837]';
+                } else if (step === 3) {
+                    valEnglish.innerText = 'A cat has nine lives';
+                    valChinese.innerText = '猫有九条命';
+                    valGpt.innerText = '[32, 9059, 853, 19712, 8354]';
+                }
+            }
+
+            // Step 4: Hide Overlay (or if resetting from >3)
+            if (step === 4 || step < 2) {
+                if (step === 4) {
+                    dimLayer.classList.remove('active');
+                    // tokenWord.classList.remove('active');
+                    tokenOverlay.classList.remove('visible');
+                    connectorSvg.classList.remove('visible');
+                } else if (step < 2) {
+                    dimLayer.classList.remove('active');
+                    tokenWord.classList.remove('active');
+                    tokenOverlay.classList.remove('visible');
+                    connectorSvg.classList.remove('visible');
+                }
+            }
+
+            // Step 5: Answer
+            if (step >= 5) {
+                answer.classList.add('visible');
+            } else {
+                answer.classList.remove('visible');
+            }
+
+            // Step 6: Code
+            if (step >= 6) {
+                codeContainer.classList.add('visible');
+            } else {
+                codeContainer.classList.remove('visible');
+            }
+        }
+
+        // Handle window resize to redraw line if visible
+        window.addEventListener('resize', () => {
+            if (currentStep === 2 || currentStep === 3) {
+                drawConnector();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                if (currentStep < 6) {
+                    currentStep++;
+                    updateState(currentStep);
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (currentStep > 0) {
+                    currentStep--;
+                    updateState(currentStep);
+                }
+            }
+        });
+    </script>
+    <div class="footer">
+        Ref: <a href="https://docs.mistral.ai/cookbooks/concept-deep-dive-tokenization-tool_calling#tokenizer-v2"
+            target="_blank">https://docs.mistral.ai/cookbooks/concept-deep-dive-tokenization-tool_calling#tokenizer-v2</a>
+    </div>
+
+<script src="scripts/slide-controller.js"></script></body>
+
+</html>

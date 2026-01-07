@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intro - Tech Conf 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Intro Slide Layout */
+        .intro-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #51606D;
+        }
+
+        /* Central Layout: World at Bottom, Brain at Center-Top */
+        /* We use absolute positioning relative to a central 1000px container to keep aspect ratio? 
+           Or just flex column and absolute around it. */
+
+        .layout-core {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            /* World at bottom */
+            padding-bottom: 0px;
+        }
+
+        /* World */
+        .intro-world {
+            position: relative;
+            width: 360px;
+            /* Increased from 280 */
+            /* 200 -> 280 */
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            transform: translateY(50px);
+            margin-bottom: -80px;
+            /* Move world down */
+        }
+
+        /* Brain - Centered above world */
+        .intro-brain-container {
+            position: absolute;
+            top: 55%;
+            /* Moved down from 40% */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* True Center */
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .intro-brain {
+            width: 200px;
+            /* 150 -> 200 */
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .ai-label {
+            position: absolute;
+            top: -20px;
+            /* Moved down from -60px */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            white-space: nowrap;
+        }
+
+        /* Primary Arrow World -> Brain (CSS Line) */
+        .intro-arrow-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 160px;
+            /* Moved down from 110px to bottom of brain */
+            width: 4px;
+            height: 0px;
+            /* Grows */
+            background-color: white;
+            z-index: 8;
+            opacity: 0;
+            transition: height 0.5s ease, opacity 0.5s ease;
+        }
+
+        .intro-arrow-line::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            /* Arrow head at top of line */
+            left: -8px;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 15px solid white;
+            /* Points Up */
+        }
+
+        /* Concepts Circle */
+        .concept-node {
+            position: absolute;
+            /* Remove fixed width to allow label to extend */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.5s ease;
+            transform: translate(-50%, -50%) scale(0.5);
+            pointer-events: none;
+            gap: 10px;
+            /* Space between icon and text */
+        }
+
+        .concept-node.visible {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Orientations */
+        .concept-node.pos-top {
+            flex-direction: column-reverse;
+            /* Label Top, Icon Bottom */
+        }
+
+        .concept-node.pos-bottom {
+            flex-direction: column;
+            /* Icon Top, Label Bottom (Default) */
+        }
+
+        .concept-node.pos-left {
+            flex-direction: row-reverse;
+            /* Label Left, Icon Right */
+            text-align: right;
+        }
+
+        .concept-node.pos-right {
+            flex-direction: row;
+            /* Icon Left, Label Right */
+            text-align: left;
+        }
+
+        .concept-icon {
+            width: 100px;
+            /* Increased from 60px */
+            height: 100px;
+            display: block;
+            flex-shrink: 0;
+            background-size: 200%;
+            background-repeat: no-repeat;
+            /* No border radius needed for clean shapes */
+        }
+
+        .label {
+            color: white;
+            font-size: 1.1rem;
+            /* Slightly larger text */
+            font-weight: 600;
+            text-shadow: 1px 1px 2px black;
+            white-space: nowrap;
+            /* Keep text differently? */
+            max-width: 200px;
+            /* limit width */
+            white-space: normal;
+        }
+
+        /* Connecting Lines Brain -> Concept */
+        .connector-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            height: 2px;
+            background-color: white;
+            transform-origin: 0 50%;
+            /* Rotate from center */
+            width: 0px;
+            /* Grows out */
+            z-index: 1;
+            transition: width 0.5s ease;
+        }
+
+        /* Visibility States */
+        body.step-0 .intro-world {
+            opacity: 0;
+        }
+
+        body.step-1 .intro-world {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Step 2: Connection Arrow */
+        body.step-2 .intro-world {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* JS handles specific animations */
+    </style>
+</head>
+
+<body class="intro-slide">
+
+    <main class="intro-container">
+
+        <!-- Concepts Container (Centered on Screen) -->
+        <div id="concepts-layer"
+            style="position: absolute; width: 100%; height: 100%; pointer-events: none; z-index: 4;">
+            <!-- JS will populate nodes here -->
+        </div>
+
+        <div class="layout-core">
+            <!-- Brain Group -->
+            <div class="intro-brain-container">
+                <div class="ai-label" id="ai-label">AI</div>
+                <img src="images/memphis-brain-grey.png" class="intro-brain" id="brain-img">
+                <div class="intro-arrow-line" id="main-arrow"></div>
+            </div>
+
+            <!-- World -->
+            <img src="images/memphis-world-grey.png" class="intro-world" id="world-img">
+        </div>
+
+    </main>
+
+    <script>
+        const stepsData = [
+            { id: 'world', type: 'core' },
+            { id: 'brain', type: 'core' },
+            { id: 'spacer', type: 'spacer' },
+            /* Concepts List */
+            { id: 'prompt', label: 'Prompt Engineering', img: 'images/concepts-grid-1.png', bgPos: '0% 0%' },
+            { id: 'context', label: 'Context Windows', img: 'images/concepts-grid-1.png', bgPos: '100% 0%' },
+            { id: 'tokens', label: 'Tokens', img: 'images/concepts-grid-1.png', bgPos: '0% 100%' },
+            { id: 'llms', label: 'LLMs', img: 'images/concepts-grid-1.png', bgPos: '100% 100%' },
+
+            { id: 'rag', label: 'RAG', img: 'images/concepts-grid-2.png', bgPos: '0% 0%' },
+            { id: 'mcp', label: 'MCP', img: 'images/concepts-grid-2.png', bgPos: '100% 0%' },
+            { id: 'agents', label: 'Agents', img: 'images/concepts-grid-2.png', bgPos: '0% 100%' },
+            { id: 'guard', label: 'Guardrails', img: 'images/concepts-grid-2.png', bgPos: '100% 100%' },
+
+            { id: 'a2a', label: 'A2A', img: 'images/concepts-grid-3.png', bgPos: '0% 0%' },
+            { id: 'lang', label: 'LangChain', img: 'images/concepts-grid-3.png', bgPos: '100% 0%' },
+            { id: 'models', label: 'Claude/Gemini', img: 'images/concepts-grid-3.png', bgPos: '0% 100%' },
+        ];
+
+        var currentStepIndex = 0;
+        window.totalSteps = stepsData.length;
+        const brainEl = document.getElementById('brain-img');
+        const worldEl = document.getElementById('world-img');
+        const arrowEl = document.getElementById('main-arrow');
+        const aiLabelEl = document.getElementById('ai-label');
+        const container = document.getElementById('concepts-layer');
+
+        // Circle Params
+        // Staggered radii to prevent overlapping
+        const RADIUS_NEAR = 280;
+        const RADIUS_FAR = 400;
+
+        // Generate Concept Nodes
+        const conceptIndices = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]; // Indices in stepsData
+
+        conceptIndices.forEach((dataIdx, i) => {
+            const item = stepsData[dataIdx];
+            const node = document.createElement('div');
+
+            // Icon div with sprite background
+            const icon = document.createElement('div');
+            icon.className = 'concept-icon';
+            icon.style.backgroundImage = `url('${item.img}')`;
+            icon.style.backgroundPosition = item.bgPos;
+
+            const label = document.createElement('div');
+            label.className = 'label';
+            label.innerText = item.label;
+
+            // Calculate Angle
+            // Total Arch: From 160 deg to 380 deg
+            const startAng = Math.PI - 0.4;
+            const endAng = 2 * Math.PI + 0.4;
+            const range = endAng - startAng;
+
+            const angle = startAng + (i / (conceptIndices.length - 1)) * range;
+
+            // Stagger radius: Alternate Near/Far
+            // To prevent crowding, maybe specific indices?
+            // Simple alternating:
+            const radius = (i % 2 === 0) ? RADIUS_FAR : RADIUS_NEAR;
+
+            // Determine Position Class (Orientation)
+            const cos = Math.cos(angle);
+
+            if (cos < -0.4) {
+                node.className = 'concept-node pos-left';
+            } else if (cos > 0.4) {
+                node.className = 'concept-node pos-right';
+            } else {
+                node.className = 'concept-node pos-top';
+            }
+
+            node.id = `node-${dataIdx}`;
+
+            node.appendChild(icon);
+            node.appendChild(label);
+            container.appendChild(node);
+
+            let x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+
+            // Manual adjustment for Context Windows
+            if (item.id === 'context') {
+                x -= 45;
+            }
+
+            // Store final translations and specific radius for this node
+            node.dataset.transX = `${x}px`;
+            node.dataset.transY = `${y}px`;
+            node.dataset.radius = radius;
+
+            // Create Line
+            const line = document.createElement('div');
+            line.className = 'connector-line';
+            line.id = `line-${dataIdx}`;
+
+            // Start line from offset (Brain Radius 100px + Buffer 20px = 120px)
+            line.style.transform = `rotate(${angle * (180 / Math.PI)}deg) translateX(120px)`;
+
+            container.appendChild(line);
+        });
+
+        function updateVisuals() {
+            // Step 0: Nothing (Init)
+
+            // Step 1: World
+            if (currentStepIndex >= 1) {
+                worldEl.style.opacity = '1';
+                worldEl.style.transform = 'translateY(0)';
+            } else {
+                worldEl.style.opacity = '0';
+                worldEl.style.transform = 'translateY(50px)';
+            }
+
+            // Step 2: Arrow + Brain
+            if (currentStepIndex >= 2) {
+                // Arrow pops in
+                arrowEl.style.opacity = '1';
+                arrowEl.style.height = '80px'; /* Extend line down */
+
+                setTimeout(() => {
+                    // Easier: just set brain opacity
+                    brainEl.style.opacity = '1';
+                    aiLabelEl.style.opacity = '1';
+                }, 300);
+            } else {
+                arrowEl.style.opacity = '0';
+                arrowEl.style.height = '0px';
+                brainEl.style.opacity = '0';
+                aiLabelEl.style.opacity = '0';
+            }
+
+            // Concepts
+            conceptIndices.forEach(idx => {
+                const node = document.getElementById(`node-${idx}`);
+                const line = document.getElementById(`line-${idx}`);
+                const radius = parseInt(node.dataset.radius);
+
+                if (currentStepIndex >= idx) {
+                    node.classList.add('visible');
+
+                    // Positioning:
+                    node.style.top = '55%';
+                    node.style.left = '50%';
+                    line.style.top = '55%';
+                    line.style.left = '50%';
+
+                    node.style.transform = `translate(calc(-50% + ${node.dataset.transX}), calc(-50% + ${node.dataset.transY})) scale(1)`;
+
+                    // Line Width:
+                    // Total Distance = Radius
+                    // Start Offset = 120px (Brain Radius 100 + Buffer 20)
+                    // End Buffer = 60px (Icon Radius)
+                    // Width = Radius - StartOffset - EndBuffer
+                    const width = radius - 120 - 60;
+                    line.style.width = `${width}px`;
+                } else {
+                    node.classList.remove('visible');
+                    node.style.transform = `translate(-50%, -50%) scale(0.5)`;
+                    line.style.width = '0px';
+                }
+            });
+        }
+
+        // Nav
+        document.addEventListener('keydown', (e) => {
+            if (['ArrowRight', 'ArrowDown', ' '].includes(e.key)) {
+                if (currentStepIndex < stepsData.length) currentStepIndex++;
+                updateVisuals();
+            } else if (['ArrowLeft', 'ArrowUp', 'Backspace'].includes(e.key)) {
+                if (currentStepIndex > 0) currentStepIndex--;
+                updateVisuals();
+            }
+        });
+
+        // Init
+        updateVisuals();
+
+    </script>
+<script src="scripts/slide-controller.js"></script></body>
+
+</html>
