@@ -337,8 +337,13 @@
                         </svg>
                     </div>
                     <div class="card-action">Enforce Policies for Agent and Agent-Based Actions</div>
-                    <div class="card-bottom"><span class="bullet">●</span> <span class="question-text">What permissions
-                            is the agent allowed to exercise?</span></div>
+                    <div class="card-bottom">
+                        <ul class="question-list">
+                            <li>What systems/tools can it access?</li>
+                            <li>What data can it read/write/delete?</li>
+                            <li>When can it act autonomously vs. requiring human approval?</li>
+                        </ul>
+                    </div>
                 </div>
                 <!-- CARD 4: AUDIT -->
                 <div class="card" id="card-3">
@@ -368,8 +373,13 @@
                         </svg>
                     </div>
                     <div class="card-action">Enable tracking agent activity for accountability</div>
-                    <div class="card-bottom"><span class="bullet">●</span> <span class="question-text">How do we log
-                            agent actions for full accountability?</span></div>
+                    <div class="card-bottom">
+                        <ul class="question-list">
+                            <li>Who is responsible for agent actions?</li>
+                            <li>How do we audit agent behavior?</li>
+                            <li>How do we ensure compliance?</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -404,7 +414,18 @@
             }
         }
         function next() { if (currentStep < maxSteps) { currentStep++; updateView(); } }
-        function prev() { if (currentStep > 0) { currentStep--; updateView(); } }
+        function prev() {
+            // If we are at the first step, inform the parent to go to the previous slide
+            if (currentStep === 0) {
+                // Send a message to the parent window (index.html) to trigger back navigation
+                window.parent.postMessage({ status: 'DONE_PREV' }, '*');
+                return;
+            }
+            if (currentStep > 0) {
+                currentStep--;
+                updateView();
+            }
+        }
         window.addEventListener('keydown', e => { if (['ArrowRight', ' ', 'Enter', 'PageDown', 'ArrowDown'].includes(e.key)) next(); else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) prev(); });
         window.onload = () => { updateView(); };
     </script>

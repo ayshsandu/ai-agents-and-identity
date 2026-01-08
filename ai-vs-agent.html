@@ -88,6 +88,18 @@
             text-align: center;
             width: 45%;
         }
+
+        /* Fade‑in animation for image and labels */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: none;
+        }
     </style>
 </head>
 
@@ -99,15 +111,28 @@
 
     <div class="content-container">
         <div class="illustration-container">
-            <img src="images/ai-vs-agent.png" alt="AI vs Agent Diagram" class="illustration">
+            <img src="images/ai-vs-agent.png" alt="AI vs Agent Diagram" class="illustration fade-in">
         </div>
 
         <div class="labels-container">
-            <div class="label">AI</div>
-            <div class="label">AI with action and perception</div>
+            <div class="label fade-in">AI</div>
+            <div class="label fade-in">AI with action and perception</div>
         </div>
     </div>
 
-<script src="scripts/slide-controller.js"></script></body>
+    <script src="scripts/slide-controller.js"></script>
+    <script>
+        // After the page loads, reveal the illustration and labels with animation
+        window.addEventListener('load', () => {
+            const img = document.querySelector('.illustration');
+            const labels = document.querySelectorAll('.label');
+            // Slight delay for a smoother effect
+            setTimeout(() => {
+                img.classList.add('visible');
+                labels.forEach(l => l.classList.add('visible'));
+            }, 300);
+        });
+    </script>
+</body>
 
 </html>
