@@ -413,7 +413,14 @@
                 cards.forEach(card => { card.classList.remove('active'); card.classList.remove('revealed'); card.style.opacity = '1'; card.style.transform = 'scale(0.95)'; });
             }
         }
-        function next() { if (currentStep < maxSteps) { currentStep++; updateView(); } }
+        function next() {
+            if (currentStep < maxSteps) {
+                currentStep++;
+                updateView();
+            } else {
+                window.parent.postMessage({ status: 'DONE_NEXT' }, '*');
+            }
+        }
         function prev() {
             // If we are at the first step, inform the parent to go to the previous slide
             if (currentStep === 0) {
@@ -426,6 +433,14 @@
                 updateView();
             }
         }
+
+        window.addEventListener('message', (event) => {
+            if (event.data.action === 'NAVIGATE') {
+                if (event.data.direction === 'NEXT') next();
+                if (event.data.direction === 'PREV') prev();
+            }
+        });
+
         window.addEventListener('keydown', e => { if (['ArrowRight', ' ', 'Enter', 'PageDown', 'ArrowDown'].includes(e.key)) next(); else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) prev(); });
         window.onload = () => { updateView(); };
     </script>
