@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond Tools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: white;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            padding: 40px 60px;
+        }
+
+        /* Orange accent bar at top left */
+        .accent-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120px;
+            height: 25px;
+            background-color: #ff7300;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: black;
+            margin-top: 40px;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: #333;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            transition-delay: 0.2s;
+            /* Slight delay after title */
+        }
+
+        .content-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease, transform 1s ease;
+            transition-delay: 0.5s;
+            /* Delay after subtitle */
+        }
+
+        .illustration {
+            max-width: 90%;
+            max-height: 70vh;
+            object-fit: contain;
+        }
+
+        /* Animation classes */
+        .visible {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="accent-bar"></div>
+
+    <h1 id="title">What is an Agent : Beyond tools</h1>
+    <h2 id="subtitle">Tools makes an Agent, but it's not enough.</h2>
+
+    <div class="content-container" id="content">
+        <img src="images/beyond-tools.png" alt="Beyond Tools Diagram" class="illustration">
+    </div>
+
+    <script src="scripts/slide-controller.js"></script>
+    <script>
+        // Animate elements on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('title').classList.add('visible');
+                document.getElementById('subtitle').classList.add('visible');
+                document.getElementById('content').classList.add('visible');
+            }, 100);
+        });
+    </script>
+</body>
+
+</html>
