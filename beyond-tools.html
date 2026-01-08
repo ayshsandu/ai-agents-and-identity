@@ -97,17 +97,50 @@
         <img src="images/beyond-tools.png" alt="Beyond Tools Diagram" class="illustration">
     </div>
 
-    <script src="scripts/slide-controller.js"></script>
     <script>
-        // Animate elements on load
+        var currentStep = 0;
+        window.totalSteps = 2;
+
+        // On load, show the title immediately (or with its nice CSS transition)
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('title').classList.add('visible');
-                document.getElementById('subtitle').classList.add('visible');
-                document.getElementById('content').classList.add('visible');
             }, 100);
         });
+
+        function updateState(step) {
+            // Step 1: Show Subtitle
+            const subtitle = document.getElementById('subtitle');
+            if (step >= 1) {
+                subtitle.classList.add('visible');
+            } else {
+                subtitle.classList.remove('visible');
+            }
+
+            // Step 2: Show Content
+            const content = document.getElementById('content');
+            if (step >= 2) {
+                content.classList.add('visible');
+            } else {
+                content.classList.remove('visible');
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    updateState(currentStep);
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (currentStep > 0) {
+                    currentStep--;
+                    updateState(currentStep);
+                }
+            }
+        });
     </script>
+    <script src="scripts/slide-controller.js"></script>
 </body>
 
 </html>
