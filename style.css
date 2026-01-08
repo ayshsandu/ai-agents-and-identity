@@ -7,7 +7,7 @@
 body {
     width: 100vw;
     height: 100vh;
-    background-image: url('images/background-1.png');
+    background-image: url('images/welcome.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
